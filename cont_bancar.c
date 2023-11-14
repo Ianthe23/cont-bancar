@@ -45,6 +45,7 @@ int validare_data(int zi, int luna, int an) {
     return true;
 }
 
+
 int validare_tip(char tip) {
     /*
         Validam tipul tranzactiei
@@ -76,3 +77,4 @@ int initializare_tranzactii() {
    tranzactii[0].tip = 'V';
 
 }
+

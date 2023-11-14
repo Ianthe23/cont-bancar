@@ -4,6 +4,20 @@
 #include <string.h>
 #include "cont_bancar.c"
 
+/*
+        Creați o aplicație care permite utilizatorului să înregistreze și 
+    să gestioneze date financiare simple, cum ar fi tranzacțiile: veniturile și cheltuielile.
+
+    Structura tranzactiilor este definita printr-un vector, unde:
+        - data este un string, ziua, luna si anul fiind despartite de '/'
+              EX: tranzactii[0].data = "01/01/2000"
+        - descrierea este tot un string care include si spatii
+              EX: tranzactii[0].descriere = "Carte sf"
+        - valoarea este o valoarea intreaga de tip integer
+        - tipul este un singur caracter ('C' = cheltuiala, 'V' = venit)
+    
+*/
+
 FILE *fp;
 
 void afisare_lista_tranzactii(int n) {
@@ -18,10 +32,10 @@ void afisare_lista_tranzactii(int n) {
           printf("      - cu descrierea: %s\n", tranzactii[i].descriere);
           printf("      - valoare: %d\n", tranzactii[i].valoare);
           printf("      - de tipul: ");
-          if (tranzactii[i].tip == 'V')
+          if (tranzactii[i].tip == 'V') //daca tipul tranzactiei este 'V', atunci printam "venit"
               printf("venit\n");
           else
-              printf("cheltuiala\n");
+              printf("cheltuiala\n");   //daca tipul tranzactiei este 'C', atunci printam "cheltuiala"
           printf("\n");
       }
    }
@@ -38,20 +52,22 @@ void afisare_date_din_fisier() {
     int nr_ordin, valoare;
     char data[12], descriere[201], tip;
 
-    fp = fopen("financial_data.txt", "r");
+    fp = fopen("financial_data.txt", "r"); //deschidem fisierul unde am stocat tranzactiile, prin modul "read only"
     if (fp) {
-        
+        /*
+            Citim intrarile formatate dintr-un flux, pana cand ajungem la capatul fisierului
+        */
         while(fscanf(fp, "tranzactia %d\n data %s\n descriere %[^\n]\n valoare %d\n tip %c\n", &nr_ordin, data, descriere, &valoare, &tip) != EOF) {
             printf("Tranzactia: %d\n", nr_ordin);
             printf(" - din data: %s\n", data);
             printf(" - cu descrierea: %s\n", descriere);
             printf(" - valoare: %d\n", valoare);
             if(tip == 'C')
-                printf(" - tip: cheltuiala\n\n");
+                printf(" - tip: cheltuiala\n\n"); //daca tipul tranzactiei este 'C', atunci printam "cheltuiala"
             else
-                printf(" - tip: venit\n\n");
+                printf(" - tip: venit\n\n");      //daca tipul tranzactiei este 'V', atunci printam "venit"
         }
-        fclose(fp);
+        fclose(fp); //inchidem fisierul
     }
     else 
         printf("\nEroare: Nu putem deschide fisierul pentru a citi.");
@@ -93,7 +109,7 @@ void adaugare_tranzactie(int n) {
    if (ok) {
     adaugare_valida(n, data, descriere, valoare, tip);//adaugam datele valide in vector
     /*
-        Adaugam tranzactia in fisier
+        Adaugam tranzactia in fisier, dand append in acesta
     */
     fp = fopen("financial_data.txt", "a");
     if (fp) {
@@ -111,11 +127,11 @@ void vizualizare_sold(int n) {
     /*
         Calculam soldul contului     
     */
-   long long int sold = tranzactii[0].valoare;
+   long long int sold = tranzactii[0].valoare;  
    for (int i = 1; i < n; ++i) {
-        if(tranzactii[i].tip == 'V')
+        if(tranzactii[i].tip == 'V')       //daca tranzactia este de tip venit, o adaugam in sold
             sold += tranzactii[i].valoare;
-        else
+        else                               //daca nu este de tip venit, o scadem din sold
             sold -= tranzactii[i].valoare;
 
    }
@@ -126,7 +142,7 @@ void vizualizare_sold(int n) {
 
 void vizualizare_raport(int n, int luna_dorita) {
     /*
-        Creeam raportul cu veniturile si cheltuielile contului
+        Creeam raportul cu veniturile si cheltuielile contului, perioada fiind LUNA in care s-au efectuat tranzactiile
     */
    int cheltuieli = 0, venituri = 0, luna, zi, an;
 
@@ -134,7 +150,9 @@ void vizualizare_raport(int n, int luna_dorita) {
 
    printf("    Veniturile dumneavoastra sunt urmatoarele: \n\n");
 
-   
+   /*
+        Afisam prima data veniturile din luna respectiva
+   */
    for(int i = 0; i < n; ++i) {
         sscanf(tranzactii[i].data, "%d/%d/%d", &zi, &luna, &an);
         if(tranzactii[i].tip == 'V' && luna == luna_dorita) {
@@ -145,6 +163,10 @@ void vizualizare_raport(int n, int luna_dorita) {
    
    printf("\n");
    printf("    Cheltuielile dumneavoastra sunt urmatoarele: \n\n");
+
+   /*
+        Afisam dupa aceea cheltuielile din luna respectiva
+   */
    for(int i = 0; i < n; ++i) {
         sscanf(tranzactii[i].data, "%d/%d/%d", &zi, &luna, &an);
         if(tranzactii[i].tip == 'C' && luna == luna_dorita) {
@@ -176,7 +198,7 @@ void run() {
     */
    initializare_tranzactii();
 
-    fp = fopen("financial_data.txt", "w+");
+    fp = fopen("financial_data.txt", "w+"); //creeam fisierul in care vom pune tranzactia initiala
     fprintf(fp, "tranzactia %d\n data %s\n descriere %s\n valoare %d\n tip %c\n", 1, tranzactii[0].data, tranzactii[0].descriere, tranzactii[0].valoare, tranzactii[0].tip);
     fclose(fp);
     
@@ -194,20 +216,20 @@ void run() {
         optiune = 0;
         valid = 1;
         printf("Optiunea aleasa de dumneavoastra este: ");
-        scanf("%d", &optiune);
+        scanf("%d", &optiune); 
         if (!optiune){
             printf("Introduceti o optiune valida!\n");
             valid = 0;
-        }
+        }//verificam daca optiunea introdusa se afla in meniu
         printf("\n");
 
         if(valid)
             switch (optiune) {
                 case 1:
-                    int mod = 0;
+                    int mod = 0; //printam modurile prin care se poate printa vectorul de tranzactii
                     printf("Modul de afisare al tranzactiilor este: \n");
-                    printf("     1) din fisierul de date;\n");
-                    printf("     2) direct pe consola;\n\n");
+                    printf("     1) din fisierul de date;\n"); //primul mod de afisare este sa preia datele din fisier si sa le scrie in consola
+                    printf("     2) direct pe consola;\n\n");  //al doilea mod este de a le afisa direct in consola
                     printf("Introduceti modul ales de dumneavoastra: ");
                     scanf("%d", &mod);
                     if(mod == 1)
@@ -215,7 +237,7 @@ void run() {
                     else if(mod == 2)
                         afisare_lista_tranzactii(n);
                     else
-                        printf("Nu a fost introdus modul corect din cele de mai sus!\n\n");
+                        printf("Nu a fost introdus modul corect din cele de mai sus!\n\n");//verificam daca a fost introduc un mod corect
                     break;
                 case 2:
                     adaugare_tranzactie(n);
@@ -225,12 +247,12 @@ void run() {
                     vizualizare_sold(n);
                     break;
                 case 4:
-                    int luna;
+                    int luna;//preluam perioada pe care sa se scrie raportul
                     printf("Introduceti luna: ");
-                    scanf("%d", &luna);
+                    scanf("%d", &luna); //luna este de tip integer, de la 1 la 12
                     printf("\n");
 
-                    if(luna < 1 || luna > 12)
+                    if(luna < 1 || luna > 12) //verificam daca a fost introdusa o luna valida
                         printf("Nu a fost introdusa o luna valida!\n\n");
                     else
                         vizualizare_raport(n, luna);
