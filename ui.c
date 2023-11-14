@@ -196,6 +196,7 @@ void run() {
     /*
         Implementam consola interefata-utilizator
     */
+   run_teste();
    initializare_tranzactii();
 
     fp = fopen("financial_data.txt", "w+"); //creeam fisierul in care vom pune tranzactia initiala
@@ -203,9 +204,9 @@ void run() {
     fclose(fp);
     
    int exit = 0;
-   int optiune;
+   char optiune[21];
+   int optiune_int;
    bool valid = 1;
-
    printf("             Bun venit la Banca X!    \n\n");
 
    while(!exit) {
@@ -213,18 +214,22 @@ void run() {
         printf("\n");
         print_meniu();
         printf("\n");
-        optiune = 0;
         valid = 1;
         printf("Optiunea aleasa de dumneavoastra este: ");
-        scanf("%d", &optiune); 
-        if (!optiune){
+        scanf("%s", optiune); 
+        getc(stdin); 
+        
+        if ((optiune[0] - '0') >= 1 && (optiune[0] - '0') <= 5 && strlen(optiune) == 1);
+        else {
             printf("Introduceti o optiune valida!\n");
             valid = 0;
-        }//verificam daca optiunea introdusa se afla in meniu
+        }  
+        //verificam daca optiunea introdusa se afla in meniu
         printf("\n");
 
         if(valid)
-            switch (optiune) {
+            
+            switch ((int)(optiune[0] - '0')) {
                 case 1:
                     int mod = 0; //printam modurile prin care se poate printa vectorul de tranzactii
                     printf("Modul de afisare al tranzactiilor este: \n");
@@ -236,8 +241,11 @@ void run() {
                         afisare_date_din_fisier();
                     else if(mod == 2)
                         afisare_lista_tranzactii(n);
-                    else
+                    else{
+                        char linie[201];
+                        fgets(linie, 201, stdin); //daca nu este introdus modul corect, citim linia gresita de comanda
                         printf("Nu a fost introdus modul corect din cele de mai sus!\n\n");//verificam daca a fost introduc un mod corect
+                    }
                     break;
                 case 2:
                     adaugare_tranzactie(n);
@@ -260,8 +268,8 @@ void run() {
                 case 5:
                     exit = 1;
                     break;
-            }
-
+            
+        }
    }
    printf("\n       Va multumim ca ati ales Banca X! La revedere!\n\n");
 
