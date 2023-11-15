@@ -76,13 +76,13 @@ void afisare_date_din_fisier() {
  
 }
 
-void adaugare_tranzactie(int n) {
+int adaugare_tranzactie(int n) {
     /*
         Adaugam o noua tranzactie
     */
    char data[11], descriere[201], tip;
    int valoare, zi, luna, an;
-   bool ok = 1;
+   int ok = 1;
    printf(" - introduceti data: ");
    scanf("%s", data); // citim data
    getc(stdin);
@@ -119,7 +119,9 @@ void adaugare_tranzactie(int n) {
     else {
         printf("\nEroare: Nu putem deschide fisierul pentru a scrie.");
     }
+    
    }
+   return ok;
    
 }
 
@@ -248,8 +250,8 @@ void run() {
                     }
                     break;
                 case 2:
-                    adaugare_tranzactie(n);
-                    n++;
+                    if(adaugare_tranzactie(n))
+                        n++;
                     break;
                 case 3:
                     vizualizare_sold(n);
