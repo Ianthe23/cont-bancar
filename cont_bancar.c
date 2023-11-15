@@ -4,7 +4,7 @@
 
 //initalizam vectorul cu tranzactii si lungimea acestuia
 struct data{char data[11]; char descriere[201]; int valoare; char tip;};
-struct data tranzactii[1001], copie_tranzactii[1001];
+struct data tranzactii[1001];
 int n = 1;
 
 
@@ -207,6 +207,6 @@ void run_teste(){
     if(test_validare_tip())
         printf("Testul 4 a trecut cu succes!\n");
     else
-        printf("Testul 4 NU a trecut cu succes!\n");
+        printf("Testul 4 NU a trecut cu succes!\n\n");
     
 }

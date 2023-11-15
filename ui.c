@@ -13,7 +13,7 @@
               EX: tranzactii[0].data = "01/01/2000"
         - descrierea este tot un string care include si spatii
               EX: tranzactii[0].descriere = "Carte sf"
-        - valoarea este o valoarea intreaga de tip integer
+        - valoarea este o valoare intreaga de tip integer
         - tipul este un singur caracter ('C' = cheltuiala, 'V' = venit)
     
 */
@@ -81,11 +81,15 @@ int adaugare_tranzactie(int n) {
         Adaugam o noua tranzactie
     */
    char data[11], descriere[201], tip;
-   int valoare, zi, luna, an;
+   int valoare = 0, zi, luna, an;
    int ok = 1;
    printf(" - introduceti data: ");
    scanf("%s", data); // citim data
    getc(stdin);
+   if (sscanf(data, "%d/%d/%d", &zi, &luna, &an) == 3) {
+        if(!validare_data(zi, luna, an))
+            ok = 0;
+   }//validam data
 
    printf(" - introduceti descrierea: ");
    fgets(descriere, 201, stdin); // citim descrierea cu spatii, inclusiv enter-ul de la final
@@ -93,18 +97,17 @@ int adaugare_tranzactie(int n) {
 
    printf(" - introduceti valoarea: ");
    scanf("%d", &valoare); // citim valoarea
+   if(!valoare){
+        char linie[201];
+        fgets(linie, 201, stdin); //daca nu este introdusa valoarea corecta, citim linia gresita de date
+        ok = 0;
+   }
    
    printf(" - introduceti tipul: ");
    scanf(" %c", &tip); // citim tipul
    getchar();
-
-   if (sscanf(data, "%d/%d/%d", &zi, &luna, &an) == 3) {
-        if(!validare_data(zi, luna, an))
-            printf("Data introdusa gresit!\n"), ok = 0;
-   }//validam data
-
    if (!validare_tip(tip))
-        printf("Tipul tranzactiei este introdus gresit!\n"), ok = 0;//validam tipul tranzactiei
+        ok = 0;//validam tipul tranzactiei
 
    if (ok) {
     adaugare_valida(n, data, descriere, valoare, tip);//adaugam datele valide in vector
@@ -119,8 +122,11 @@ int adaugare_tranzactie(int n) {
     else {
         printf("\nEroare: Nu putem deschide fisierul pentru a scrie.");
     }
-    
    }
+   else
+     printf("Nu au fost introduse date valide pentru tranzactie!\n");
+    
+   
    return ok;
    
 }
