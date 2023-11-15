@@ -93,7 +93,11 @@ int adaugare_tranzactie(int n) {
 
    printf(" - introduceti descrierea: ");
    fgets(descriere, 201, stdin); // citim descrierea cu spatii, inclusiv enter-ul de la final
-   descriere[strlen(descriere) - 1] = '\0'; // stergem caracterul new line care se afla inainte de NULL
+   if (descriere[0] == '\n')
+        ok = 0;
+   else 
+        descriere[strlen(descriere) - 1] = '\0';// stergem caracterul new line care se afla inainte de NULL
+   
 
    printf(" - introduceti valoarea: ");
    scanf("%d", &valoare); // citim valoarea
